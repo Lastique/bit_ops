@@ -16,9 +16,12 @@
 #define BOOST_BIT_OPS_COUNTING_COUNTR_ZERO_HPP_INCLUDED_
 
 #include <limits>
-#include <type_traits>
 #include <boost/bit_ops/detail/config.hpp>
 #include <boost/bit_ops/detail/int_sizes.hpp>
+#include <boost/bit_ops/detail/type_traits/enable_if.hpp>
+#include <boost/bit_ops/detail/type_traits/integral_constant.hpp>
+#include <boost/bit_ops/detail/type_traits/is_integral.hpp>
+#include <boost/bit_ops/detail/type_traits/is_unsigned.hpp>
 
 #if defined(_MSC_VER)
 #include <intrin.h>
@@ -32,7 +35,7 @@ namespace detail {
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_BUILTIN_CTZ)
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_INT, unsigned int >::type countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_INT, unsigned int >::type countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< unsigned int >(__builtin_ctz(value));
 }
@@ -40,7 +43,7 @@ inline typename std::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_INT, unsigned i
 #if BOOST_BIT_OPS_DETAIL_SIZEOF_LONG > BOOST_BIT_OPS_DETAIL_SIZEOF_INT
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned int >::type countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned int >::type countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< unsigned int >(__builtin_ctzl(value));
 }
@@ -50,7 +53,7 @@ inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned 
 #if BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG > BOOST_BIT_OPS_DETAIL_SIZEOF_LONG
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned int >::type countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned int >::type countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< unsigned int >(__builtin_ctzll(value));
 }
@@ -60,7 +63,7 @@ inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned
 #elif defined(BOOST_BIT_OPS_DETAIL_HAS_BIT_SCAN_FORWARD)
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned int >::type countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned int >::type countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     unsigned long pos;
     _BitScanForward(&pos, value);
@@ -70,7 +73,7 @@ inline typename std::enable_if< N <= BOOST_BIT_OPS_DETAIL_SIZEOF_LONG, unsigned 
 #if BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG > BOOST_BIT_OPS_DETAIL_SIZEOF_LONG
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned int >::type countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned int >::type countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
 #if defined(_M_AMD64) || defined(_M_ARM64)
     unsigned long pos;
@@ -89,7 +92,7 @@ inline typename std::enable_if< N == BOOST_BIT_OPS_DETAIL_SIZEOF_LLONG, unsigned
 #else
 
 template< typename T, unsigned int N >
-inline unsigned int countr_zero_nz(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline unsigned int countr_zero_nz(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     unsigned int count = 0u;
     unsigned int digits = std::numeric_limits< T >::digits / 2u;
@@ -113,14 +116,14 @@ inline unsigned int countr_zero_nz(T value, std::integral_constant< unsigned int
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_TZCNT_U16)
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N <= 2u, unsigned int >::type countr_zero(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N <= 2u, unsigned int >::type countr_zero(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     // Note: gcc provides the intrinsic with two double underscores
     return static_cast< unsigned int >(__tzcnt_u16(value) - (16u - std::numeric_limits< T >::digits));
 }
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N == 4u, unsigned int >::type countr_zero(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N == 4u, unsigned int >::type countr_zero(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< unsigned int >(_tzcnt_u32(value));
 }
@@ -128,7 +131,7 @@ inline typename std::enable_if< N == 4u, unsigned int >::type countr_zero(T valu
 #else // defined(BOOST_BIT_OPS_DETAIL_HAS_TZCNT_U16)
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N <= 4u, unsigned int >::type countr_zero(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N <= 4u, unsigned int >::type countr_zero(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< unsigned int >(_tzcnt_u32(value) - (32u - std::numeric_limits< T >::digits));
 }
@@ -136,7 +139,7 @@ inline typename std::enable_if< N <= 4u, unsigned int >::type countr_zero(T valu
 #endif // defined(BOOST_BIT_OPS_DETAIL_HAS_TZCNT_U16)
 
 template< typename T, unsigned int N >
-inline typename std::enable_if< N == 8u, unsigned int >::type countr_zero(T value, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if< N == 8u, unsigned int >::type countr_zero(T value, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_TZCNT_U64)
     return static_cast< unsigned int >(_tzcnt_u64(value));
@@ -158,17 +161,23 @@ inline typename std::enable_if< N == 8u, unsigned int >::type countr_zero(T valu
  * \pre \a value must not be zero
  */
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, unsigned int >::type countr_zero_nz(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    unsigned int
+>::type countr_zero_nz(T value) BOOST_NOEXCEPT
 {
-    return bit_ops::detail::countr_zero_nz(value, std::integral_constant< unsigned int, sizeof(T) >());
+    return bit_ops::detail::countr_zero_nz(value, bit_ops::detail::integral_constant< unsigned int, sizeof(T) >());
 }
 
 //! Returns the number of consecutive least significant zero bits in \a value
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, unsigned int >::type countr_zero(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    unsigned int
+>::type countr_zero(T value) BOOST_NOEXCEPT
 {
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_TZCNT_U32)
-    return bit_ops::detail::countr_zero(value, std::integral_constant< unsigned int, sizeof(T) >());
+    return bit_ops::detail::countr_zero(value, bit_ops::detail::integral_constant< unsigned int, sizeof(T) >());
 #else
     return value == 0u ? static_cast< unsigned int >(std::numeric_limits< T >::digits) : bit_ops::countr_zero_nz(value);
 #endif

@@ -16,6 +16,13 @@
 
 #include <boost/config.hpp>
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !(defined(BOOST_LIBSTDCXX11) && (BOOST_LIBSTDCXX_VERSION) >= 40700) /* libstdc++ from gcc >= 4.7 in C++11 mode */
+// This macro indicates that there is not even a basic <type_traits> standard header that is sufficient for most Boost.BitOps needs.
+#define BOOST_BIT_OPS_DETAIL_NO_CXX11_BASIC_HDR_TYPE_TRAITS
+#endif
+#endif // defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+
 #if defined(__has_builtin)
 #if __has_builtin(__builtin_clz)
 #define BOOST_BIT_OPS_DETAIL_HAS_BUILTIN_CLZ

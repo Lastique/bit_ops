@@ -16,8 +16,10 @@
 #define BOOST_BIT_OPS_POW2_BIT_CEIL_HPP_INCLUDED_
 
 #include <limits>
-#include <type_traits>
 #include <boost/bit_ops/detail/config.hpp>
+#include <boost/bit_ops/detail/type_traits/enable_if.hpp>
+#include <boost/bit_ops/detail/type_traits/is_integral.hpp>
+#include <boost/bit_ops/detail/type_traits/is_unsigned.hpp>
 #include <boost/bit_ops/count/countl_zero.hpp>
 
 namespace boost {
@@ -29,14 +31,20 @@ namespace bit_ops {
  * \pre \a value must not be zero
  */
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, T >::type bit_ceil_nz(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    T
+>::type bit_ceil_nz(T value) BOOST_NOEXCEPT
 {
     return static_cast< T >(1u) << ((std::numeric_limits< T >::digits - 1u) - bit_ops::countl_zero_nz(value) + ((value & (value - 1u)) != 0u));
 }
 
 //! Returns the nearest power of 2 integer that is greater or equal to \a value
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, T >::type bit_ceil(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    T
+>::type bit_ceil(T value) BOOST_NOEXCEPT
 {
     // bit_ceil(0) == bit_ceil(1) == 1
     return value == 0u ? static_cast< T >(1u) : bit_ops::bit_ceil_nz(value);

@@ -16,6 +16,9 @@
 #define BOOST_BIT_OPS_COUNTING_COUNTL_ONE_HPP_INCLUDED_
 
 #include <boost/bit_ops/detail/config.hpp>
+#include <boost/bit_ops/detail/type_traits/enable_if.hpp>
+#include <boost/bit_ops/detail/type_traits/is_integral.hpp>
+#include <boost/bit_ops/detail/type_traits/is_unsigned.hpp>
 #include <boost/bit_ops/counting/countl_zero.hpp>
 
 namespace boost {
@@ -27,14 +30,20 @@ namespace bit_ops {
  * \pre \a value must not be all-ones
  */
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, unsigned int >::type countl_one_nf(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    unsigned int
+>::type countl_one_nf(T value) BOOST_NOEXCEPT
 {
     return bit_ops::countl_zero_nz(static_cast< T >(~value));
 }
 
 //! Returns the number of consecutive most significant one bits in \a value
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, unsigned int >::type countl_one(T value) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    unsigned int
+>::type countl_one(T value) BOOST_NOEXCEPT
 {
     return bit_ops::countl_zero(static_cast< T >(~value));
 }

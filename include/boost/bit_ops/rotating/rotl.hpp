@@ -15,8 +15,11 @@
 #define BOOST_BIT_OPS_ROTATING_ROTL_HPP_INCLUDED_
 
 #include <limits>
-#include <type_traits>
 #include <boost/bit_ops/detail/config.hpp>
+#include <boost/bit_ops/detail/type_traits/enable_if.hpp>
+#include <boost/bit_ops/detail/type_traits/integral_constant.hpp>
+#include <boost/bit_ops/detail/type_traits/is_integral.hpp>
+#include <boost/bit_ops/detail/type_traits/is_unsigned.hpp>
 
 #if defined(_MSC_VER)
 #include <intrin.h>
@@ -30,7 +33,7 @@ namespace detail {
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_ROTL8)
 
 template< typename T >
-inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int, 1u >) BOOST_NOEXCEPT
+inline T rotl(T value, unsigned int count, bit_ops::detail::integral_constant< unsigned int, 1u >) BOOST_NOEXCEPT
 {
     return static_cast< T >(_rotl8(value, count));
 }
@@ -40,7 +43,7 @@ inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int,
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_ROTL16)
 
 template< typename T >
-inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int, 2u >) BOOST_NOEXCEPT
+inline T rotl(T value, unsigned int count, bit_ops::detail::integral_constant< unsigned int, 2u >) BOOST_NOEXCEPT
 {
     return static_cast< T >(_rotl16(value, count));
 }
@@ -50,7 +53,7 @@ inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int,
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_ROTL)
 
 template< typename T >
-inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int, 4u >) BOOST_NOEXCEPT
+inline T rotl(T value, unsigned int count, bit_ops::detail::integral_constant< unsigned int, 4u >) BOOST_NOEXCEPT
 {
     return static_cast< T >(_rotl(value, count));
 }
@@ -60,7 +63,7 @@ inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int,
 #if defined(BOOST_BIT_OPS_DETAIL_HAS_ROTL64)
 
 template< typename T >
-inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int, 8u >) BOOST_NOEXCEPT
+inline T rotl(T value, unsigned int count, bit_ops::detail::integral_constant< unsigned int, 8u >) BOOST_NOEXCEPT
 {
     return static_cast< T >(_rotl64(value, count));
 }
@@ -68,7 +71,7 @@ inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int,
 #endif // defined(BOOST_BIT_OPS_DETAIL_HAS_ROTL64)
 
 template< typename T, unsigned int N >
-inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
+inline T rotl(T value, unsigned int count, bit_ops::detail::integral_constant< unsigned int, N >) BOOST_NOEXCEPT
 {
     return static_cast< T >((value << count) | (value >> (std::numeric_limits< T >::digits - count)));
 }
@@ -77,9 +80,12 @@ inline T rotl(T value, unsigned int count, std::integral_constant< unsigned int,
 
 //! Returns \a value rotated left by \a count bits
 template< typename T >
-inline typename std::enable_if< std::is_integral< T >::value && std::is_unsigned< T >::value, T >::type rotl(T value, unsigned int count) BOOST_NOEXCEPT
+inline typename bit_ops::detail::enable_if<
+    bit_ops::detail::is_integral< T >::value && bit_ops::detail::is_unsigned< T >::value,
+    T
+>::type rotl(T value, unsigned int count) BOOST_NOEXCEPT
 {
-    return bit_ops::detail::rotl(value, count, std::integral_constant< unsigned int, sizeof(T) >());
+    return bit_ops::detail::rotl(value, count, bit_ops::detail::integral_constant< unsigned int, sizeof(T) >());
 }
 
 } // namespace bit_ops
